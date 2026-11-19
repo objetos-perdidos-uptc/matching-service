@@ -124,7 +124,7 @@ class MatchingEngine:
         self.color_strategy = ColorScoringStrategy()
         self.material_strategy = MaterialScoringStrategy()
 
-    def calculateMatch(self, lost: Report, found: Report, weights: dict) -> MatchResult:
+    def calculate_match(self, lost: Report, found: Report, weights: dict) -> MatchResult:
         # calcular puntaje de cada estrategia
         s_name = self.name_strategy.calculate(lost, found)
         s_time = self.time_strategy.calculate(lost, found)
