@@ -5,3 +5,4 @@ redis>=5.0.1
 rapidfuzz>=3.6.1
 aio-pika>=9.4.3
 pytest>=7.4.4
+prometheus-fastapi-instrumentator>=7.0.0
