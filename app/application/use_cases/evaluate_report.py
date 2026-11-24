@@ -20,8 +20,15 @@ class EvaluateReportUseCase:
         results: List[MatchResult] = []
 
         for candidate in candidate_reports:
-            lost = target_report
-            found = candidate
+            # ¡LA MAGIA ESTÁ AQUÍ!
+            # Si el reporte que estamos evaluando es LOST, el candidato es FOUND.
+            if target_report.report_type == ReportType.LOST:
+                lost = target_report
+                found = candidate
+            else:
+                # Si el reporte es FOUND, el candidato es el LOST.
+                lost = candidate
+                found = target_report
 
             result = self.matching_engine.calculate_match(lost, found, self.weights)
             results.append(result)
@@ -30,6 +37,7 @@ class EvaluateReportUseCase:
         await self.match_repository.save_many(results)
 
         for r in results:
-            if r.total_score >= 80:
+            if r.total_score >= 80.0:
                 await self.event_publisher.publish_high_match(user_id=lost.user_id, match_result=r)
+                
         return results

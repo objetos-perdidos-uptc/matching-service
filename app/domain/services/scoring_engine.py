@@ -115,31 +115,28 @@ class MaterialScoringStrategy(IScoringStrategy):
         return fuzz.token_set_ratio(mat1, mat2) / 100.0
 
 class MatchingEngine:
-    """ Servicio de Dominio que orquesta todas las estrategias """
-
     def __init__(self):
         self.name_strategy = NameScoringStrategy()
         self.time_strategy = TimeScoringStrategy()
-        self.distance_strategy = DistanceScoringStrategy()
         self.color_strategy = ColorScoringStrategy()
         self.material_strategy = MaterialScoringStrategy()
+        # ¡Aquí está el cambio!
+        self.location_strategy = LocationTextScoringStrategy() 
 
     def calculate_match(self, lost: Report, found: Report, weights: dict) -> MatchResult:
-        # calcular puntaje de cada estrategia
         s_name = self.name_strategy.calculate(lost, found)
         s_time = self.time_strategy.calculate(lost, found)
-        s_distance = self.distance_strategy.calculate(lost, found)
         s_color = self.color_strategy.calculate(lost, found)
         s_material = self.material_strategy.calculate(lost, found)
+        s_location = self.location_strategy.calculate(lost, found) # Llamamos a la de texto
 
-        # aplicar pesos
         score_name = s_name * weights.get("name", 0.0)
         score_time = s_time * weights.get("time", 0.0)
-        score_distance = s_distance * weights.get("distance", 0.0)
         score_color = s_color * weights.get("color", 0.0)
         score_material = s_material * weights.get("material", 0.0)
+        score_location = s_location * weights.get("location", 0.15) # O weights.get("distance") si no lo cambiaste
 
-        total_score = score_name + score_time + score_distance + score_color + score_material
+        total_score = score_name + score_time + score_color + score_material + score_location
 
         return MatchResult(
             lost_id=lost.report_id,
@@ -149,7 +146,7 @@ class MatchingEngine:
             color_score=round(score_color * 100, 2),
             material_score=round(score_material * 100, 2),
             time_score=round(score_time * 100, 2),
-            distance_score=round(score_distance * 100, 2)
+            distance_score=round(score_location * 100, 2)
         )
 
 class LocationTextScoringStrategy(IScoringStrategy):
