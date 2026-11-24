@@ -65,7 +65,8 @@ async def evaluate_matches(
             material=schema.material,
             date_lost=schema.date_lost,
             date_found=schema.date_found,
-            location=loc
+            location=loc,
+            location_text=schema.location_text
         )
 
     target_domain = to_domain(request.target_report)

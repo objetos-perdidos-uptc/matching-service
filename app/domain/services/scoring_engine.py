@@ -151,3 +151,22 @@ class MatchingEngine:
             time_score=round(score_time * 100, 2),
             distance_score=round(score_distance * 100, 2)
         )
+
+class LocationTextScoringStrategy(IScoringStrategy):
+    """Calcula el puntaje basado en el texto de la ubicación (ej. 'Bloque B')."""
+    def calculate(self, lost: Report, found: Report) -> float:
+        loc1 = normalize_text(lost.location_text)
+        loc2 = normalize_text(found.location_text)
+        
+        if not loc1 or not loc2:
+            # Si no hay texto, intentamos usar las coordenadas (fallback)
+            if lost.location and found.location:
+                 # Aquí podrías llamar a tu lógica de Haversine anterior
+                 pass
+            return 0.0
+            
+        if loc1 == loc2:
+            return 1.0
+            
+        # Usamos RapidFuzz para comparar los textos de ubicación
+        return fuzz.token_set_ratio(loc1, loc2) / 100.0

@@ -28,6 +28,7 @@ class ReportSchema(BaseModel):
     date_lost: Optional[datetime] = None
     date_found: Optional[datetime] = None
     location: Optional[LocationSchema] = None
+    location_text: Optional[str] = None
 
 class MatchRequest(BaseModel):
     target_report: ReportSchema

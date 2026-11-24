@@ -18,6 +18,7 @@ class Report:
     date_lost: Optional[datetime] = None
     date_found: Optional[datetime] = None
     location: Optional[Location] = None
+    location_text: Optional[str] = None
     
 
 @dataclass
